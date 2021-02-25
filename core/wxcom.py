@@ -1,45 +1,40 @@
 # 企业微信基础操作
 # ERIC SUN 2020-9-24
+from core.callback_fun import recv_callback_handle
 from env import env_app
 from ctypes import *
 import json
-import copy
 
-C_ID = 0
+wx_loader = None
 
 
 # 回调函数
 @WINFUNCTYPE(None, c_ulong)
 def connect_callback(client_id):
-    print(u'新的客户端连接: ')
-    global C_ID
-    C_ID = client_id
-    print(client_id)
     print('[on_connect] client_id: {0}'.format(client_id))
 
 
 @WINFUNCTYPE(None, c_ulong, c_char_p, c_ulong)
 def recv_callback(client_id, data, length):
-    jsonData = json.loads(data)
-    if jsonData['type'] == 500:
+    json_data = json.loads(data)
+    if json_data['type'] == 500:
         return
-    print('[on_recv] client_id: {0}, message:{1}'.format(client_id, json.loads(data)))
+    env_app.thread_pool.submit(recv_callback_handle, wx_loader, client_id, json_data)
 
 
 @WINFUNCTYPE(None, c_ulong)
 def close_callback(client_id):
-    C_ID = 0
-    print(u'已断开')
+    print('[on_close] client_id: {0}'.format(client_id))
 
 
 def c_string(data):
-    print(data)
+    # print(data)
     return c_char_p(data.encode('utf-8'))
 
 
 class WeCom:
     # 加载器
-    WXLOADER = None
+    # WXLOADER = None
 
     def __init__(self):
         # 控制库地址
@@ -56,21 +51,20 @@ class WeCom:
         # 获取版本
         out = create_string_buffer(20)
         self.WXLOADER.WXCmdGetLocalWechatVersion(out, 20)
-        print(out.value.decode('utf-8'))
+        # print(out.value.decode('utf-8'))
 
         # 初始化socket连接
         self.WXLOADER.WXCmdInitSocket(connect_callback, recv_callback, close_callback)
 
+        global wx_loader
+        wx_loader = self.WXLOADER
+
+    # self.WXLOADER.WXCmdStop()
+
+    def open_wx(self):
         # 运行
         self.WXLOADER.WXCmdRun()
         # 打开企业微信
         # ret = self.WXLOADER.WXCmdOpenWechat()
         # print(ret)
         self.WXLOADER.WXCmdOpenWechat()
-
-    # self.WXLOADER.WXCmdStop()
-
-    # 发送协议
-    def send(self, data):
-        rs = self.WXLOADER.WXCmdSend(C_ID, json.dumps(data))
-        return json.loads(rs)
