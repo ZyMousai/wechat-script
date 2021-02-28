@@ -1,6 +1,6 @@
 # 企业微信基础操作
 # ERIC SUN 2020-9-24
-from core.callback_fun import recv_callback_handle
+from core.callback_fun import recv_callback_handle, label_callback_handle
 from env import env_app
 from ctypes import *
 import json
@@ -12,6 +12,7 @@ wx_loader = None
 @WINFUNCTYPE(None, c_ulong)
 def connect_callback(client_id):
     print('[on_connect] client_id: {0}'.format(client_id))
+    # env_app.thread_pool.submit(conn_callback_handle, wx_loader, client_id)
 
 
 @WINFUNCTYPE(None, c_ulong, c_char_p, c_ulong)
@@ -19,7 +20,15 @@ def recv_callback(client_id, data, length):
     json_data = json.loads(data)
     if json_data['type'] == 500:
         return
+    elif json_data['type'] == 11001:
+        # pass
+        # 获取所有标签
+        env_app.thread_pool.submit(label_callback_handle, wx_loader, client_id)
+        # conn_callback_handle(wx_loader, client_id)
+    # 线程池
     env_app.thread_pool.submit(recv_callback_handle, wx_loader, client_id, json_data)
+    # 单线程
+    # recv_callback_handle(wx_loader,client_id,json_data)
 
 
 @WINFUNCTYPE(None, c_ulong)
@@ -58,8 +67,6 @@ class WeCom:
 
         global wx_loader
         wx_loader = self.WXLOADER
-
-    # self.WXLOADER.WXCmdStop()
 
     def open_wx(self):
         # 运行
