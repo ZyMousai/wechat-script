@@ -7,3 +7,4 @@ tools/auto_recv/file
 tools/auto_recv/pic
 tools/auto_recv/video
 tools/auto_recv/gif
+__pycache__
