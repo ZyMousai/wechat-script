@@ -132,7 +132,7 @@ tools/dll
 *.dll
 .idea
 tools/im_file
-toos/auto_recv/file
-toos/auto_recv/pic
-toos/auto_recv/video
-toos/auto_recv/gif
+tools/auto_recv/file
+tools/auto_recv/pic
+tools/auto_recv/video
+tools/auto_recv/gif

@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="eb69e07d-d88c-49d9-909f-67b691e92bbb" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auto_recv_manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/auto_recv_manage.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/callback_fun.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/callback_fun.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/wxcom.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/wxcom.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +135,7 @@
       <workItem from="1614172453880" duration="6858000" />
       <workItem from="1614261070769" duration="573000" />
       <workItem from="1614262070721" duration="6622000" />
-      <workItem from="1614392009255" duration="39756000" />
+      <workItem from="1614392009255" duration="40104000" />
     </task>
     <servers />
   </component>
