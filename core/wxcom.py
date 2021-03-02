@@ -46,6 +46,31 @@ class WeCom:
     # WXLOADER = None
 
     def __init__(self):
+        pass
+        # # 控制库地址
+        # loader_path = env_app.get_dll_path(env_app.wx_com_work)
+        #
+        # # 注入库地址
+        # inject_path = env_app.get_dll_path(env_app.vx_work)
+        #
+        # # 设置控制库路径
+        # self.WXLOADER = WinDLL(loader_path)
+        # # 设置注入库路径
+        # self.WXLOADER.WXCmdInitDllPath(c_string(inject_path))
+        #
+        # # 获取版本
+        # out = create_string_buffer(20)
+        # self.WXLOADER.WXCmdGetLocalWechatVersion(out, 20)
+        # # print(out.value.decode('utf-8'))
+        #
+        # # 初始化socket连接
+        # self.WXLOADER.WXCmdInitSocket(connect_callback, recv_callback, close_callback)
+        #
+        # global wx_loader
+        # wx_loader = self.WXLOADER
+
+    @staticmethod
+    def open_wx():
         # 控制库地址
         loader_path = env_app.get_dll_path(env_app.wx_com_work)
 
@@ -53,25 +78,23 @@ class WeCom:
         inject_path = env_app.get_dll_path(env_app.vx_work)
 
         # 设置控制库路径
-        self.WXLOADER = WinDLL(loader_path)
+        WXLOADER = WinDLL(loader_path)
         # 设置注入库路径
-        self.WXLOADER.WXCmdInitDllPath(c_string(inject_path))
+        WXLOADER.WXCmdInitDllPath(c_string(inject_path))
 
         # 获取版本
         out = create_string_buffer(20)
-        self.WXLOADER.WXCmdGetLocalWechatVersion(out, 20)
+        WXLOADER.WXCmdGetLocalWechatVersion(out, 20)
         # print(out.value.decode('utf-8'))
 
         # 初始化socket连接
-        self.WXLOADER.WXCmdInitSocket(connect_callback, recv_callback, close_callback)
+        WXLOADER.WXCmdInitSocket(connect_callback, recv_callback, close_callback)
 
         global wx_loader
-        wx_loader = self.WXLOADER
-
-    def open_wx(self):
+        wx_loader = WXLOADER
         # 运行
-        self.WXLOADER.WXCmdRun()
+        WXLOADER.WXCmdRun()
         # 打开企业微信
         # ret = self.WXLOADER.WXCmdOpenWechat()
         # print(ret)
-        self.WXLOADER.WXCmdOpenWechat()
+        WXLOADER.WXCmdOpenWechat()

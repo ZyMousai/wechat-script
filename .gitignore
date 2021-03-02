@@ -127,3 +127,12 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+tools/dll
+*.dll
+.idea
+tools/im_file
+toos/auto_recv/file
+toos/auto_recv/pic
+toos/auto_recv/video
+toos/auto_recv/gif

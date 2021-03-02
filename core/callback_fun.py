@@ -111,3 +111,7 @@ def label_callback_handle(wx_obj, client_id):
         "type": env_app.WX_SEND_LABEL
     }
     send(wx_obj, client_id, response)
+
+
+def get_room_id_list(wx_obj, client_id):
+    pass
