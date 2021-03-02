@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="eb69e07d-d88c-49d9-909f-67b691e92bbb" name="Default Changelist" comment="" />
+    <list default="true" id="eb69e07d-d88c-49d9-909f-67b691e92bbb" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/tools/auto_recv/phrase/base_phrase.xlsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/callback_fun.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/callback_fun.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/auto_recv/phrase/phrase.xlsx" beforeDir="false" afterPath="$PROJECT_DIR$/tools/auto_recv/phrase/phrase.xlsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,7 +48,7 @@
       <recent name="D:\work\wechat-pc\whchat-script" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.test">
+  <component name="RunManager" selected="Python.auto_recv_manage">
     <configuration name="auto_recv_manage" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="whchat-script" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -165,7 +172,7 @@
       <workItem from="1614172453880" duration="6858000" />
       <workItem from="1614261070769" duration="573000" />
       <workItem from="1614262070721" duration="6622000" />
-      <workItem from="1614392009255" duration="32004000" />
+      <workItem from="1614392009255" duration="34819000" />
     </task>
     <servers />
   </component>
@@ -182,46 +189,46 @@
     </state>
     <state x="549" y="168" key="FileChooserDialogImpl/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1614262078198" />
     <state x="686" y="212" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1614393695770" />
-    <state width="1493" height="411" key="GridCell.Tab.0.bottom" timestamp="1614515340223">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1877" height="197" key="GridCell.Tab.0.bottom" timestamp="1614654150016">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="411" key="GridCell.Tab.0.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1614515340223" />
-    <state width="1877" height="454" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1614421914881" />
-    <state width="1493" height="411" key="GridCell.Tab.0.center" timestamp="1614515340223">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1877" height="197" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1614654150016" />
+    <state width="1877" height="197" key="GridCell.Tab.0.center" timestamp="1614654150016">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="411" key="GridCell.Tab.0.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1614515340223" />
-    <state width="1877" height="454" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1614421914881" />
-    <state width="1493" height="411" key="GridCell.Tab.0.left" timestamp="1614515340223">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1877" height="197" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1614654150016" />
+    <state width="1877" height="197" key="GridCell.Tab.0.left" timestamp="1614654150016">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="411" key="GridCell.Tab.0.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1614515340223" />
-    <state width="1877" height="454" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1614421914881" />
-    <state width="1493" height="411" key="GridCell.Tab.0.right" timestamp="1614515340223">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1877" height="197" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1614654150016" />
+    <state width="1877" height="197" key="GridCell.Tab.0.right" timestamp="1614654150016">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="411" key="GridCell.Tab.0.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1614515340223" />
-    <state width="1877" height="454" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1614421914881" />
-    <state width="1493" height="411" key="GridCell.Tab.1.bottom" timestamp="1614515340223">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1877" height="197" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1614654150016" />
+    <state width="1877" height="197" key="GridCell.Tab.1.bottom" timestamp="1614654150016">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="411" key="GridCell.Tab.1.bottom/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1614515340223" />
-    <state width="1877" height="454" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1614421914881" />
-    <state width="1493" height="411" key="GridCell.Tab.1.center" timestamp="1614515340223">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1877" height="197" key="GridCell.Tab.1.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1614654150016" />
+    <state width="1877" height="197" key="GridCell.Tab.1.center" timestamp="1614654150016">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="411" key="GridCell.Tab.1.center/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1614515340223" />
-    <state width="1877" height="454" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1614421914881" />
-    <state width="1493" height="411" key="GridCell.Tab.1.left" timestamp="1614515340223">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1877" height="197" key="GridCell.Tab.1.center/0.0.1920.1040@0.0.1920.1040" timestamp="1614654150016" />
+    <state width="1877" height="197" key="GridCell.Tab.1.left" timestamp="1614654150016">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="411" key="GridCell.Tab.1.left/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1614515340223" />
-    <state width="1877" height="454" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1614421914881" />
-    <state width="1493" height="411" key="GridCell.Tab.1.right" timestamp="1614515340223">
-      <screen x="0" y="0" width="1536" height="824" />
+    <state width="1877" height="197" key="GridCell.Tab.1.left/0.0.1920.1040@0.0.1920.1040" timestamp="1614654150016" />
+    <state width="1877" height="197" key="GridCell.Tab.1.right" timestamp="1614654150016">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="1493" height="411" key="GridCell.Tab.1.right/0.0.1536.824/1920.0.1920.1040@0.0.1536.824" timestamp="1614515340223" />
-    <state width="1877" height="454" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1614421914881" />
+    <state width="1877" height="197" key="GridCell.Tab.1.right/0.0.1920.1040@0.0.1920.1040" timestamp="1614654150016" />
     <state x="270" y="55" key="SettingsEditor" timestamp="1614174564885">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -239,7 +246,7 @@
     <SUITE FILE_PATH="coverage/wechat_script$pubilc_fun.coverage" NAME="pubilc_fun Coverage Results" MODIFIED="1614415963252" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/whchat_script$wxcom.coverage" NAME="wxcom Coverage Results" MODIFIED="1614175710330" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
     <SUITE FILE_PATH="coverage/wechat_script$callback_fun.coverage" NAME="callback_fun Coverage Results" MODIFIED="1614266680218" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/core" />
-    <SUITE FILE_PATH="coverage/wechat_script$manage.coverage" NAME="auto_recv_manage Coverage Results" MODIFIED="1614514929290" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/wechat_script$manage.coverage" NAME="auto_recv_manage Coverage Results" MODIFIED="1614652169310" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/whchat_script$env__1_.coverage" NAME="env (1) Coverage Results" MODIFIED="1614173416419" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/whchat_script$env.coverage" NAME="env Coverage Results" MODIFIED="1614174933783" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/whchat_script$manage.coverage" NAME="manage Coverage Results" MODIFIED="1614178234077" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

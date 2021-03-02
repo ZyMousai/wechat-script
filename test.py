@@ -67,6 +67,3 @@ a = [{'label_id': '14073748999626141', 'level': 1, 'name': '非常核心', 'supe
      {'label_id': '14073752940631136', 'level': 1, 'name': '倍思启程专卖店', 'super_id': '14073750543627757', 'type': 1},
      {'label_id': '14073751138632748', 'level': 2, 'name': '个人标签', 'super_id': '0', 'type': 2}]
 
-for x in a:
-    if '一般发展客户' in x['name']:
-        print(x['label_id'])

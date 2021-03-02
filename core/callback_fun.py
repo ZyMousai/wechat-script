@@ -55,8 +55,8 @@ def recv_callback_handle(wx_obj, client_id, data):
                 send(wx_obj, client_id, response)
 
                 # 设置标签
-                query_result = PublicFun.get_title(recv_content)
-                # query_result = '一般发展客户' # 测试用
+                # query_result = PublicFun.get_title(recv_content) # todo 正式环境使用，需要链接数据库
+                query_result = '一般发展客户'  # 测试用
                 if query_result:
                     label_list = []
                     for label in TITLE_LIST:
