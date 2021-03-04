@@ -3,7 +3,8 @@ import sys
 import base64
 from concurrent.futures import ThreadPoolExecutor
 
-THREAD_NUM = 30
+# 每个进程的线程数
+THREAD_NUM = 15
 
 
 class EnvApi(object):
@@ -24,6 +25,12 @@ class EnvApi(object):
     WX_SET_TITLE = 3007  # 设置标签
     WX_RECV_LABEL = 12504
     WX_SEND_LABEL = 2504
+    WX_SEND_SEARCH_FRIEND = 3000  # 发送搜索好友指令
+    WX_RECV_SEARCH_FRIEND = 13000  # 接受搜索好友指令
+    WX_ADD_FRIEND = 3001  # 添加搜索的好友
+    WX_ERROR_OFTEN = 40001  # 操作频繁错误码
+    WX_ERROR_NOT_EXIST = 40003  # 搜索用户不存在
+    WX_ERROR_UNABLE = 40004  # 对方设置 无法添加好友
 
     def __init__(self):
         self.mongo_info = {
@@ -74,6 +81,9 @@ class EnvApi(object):
 
     def get_video_path(self):
         return os.path.join(self.app_path(), "tools", "auto_recv", "video")
+
+    def get_add_account_csv(self):
+        return os.path.join(self.app_path(), "tools", "im_file", "mobile_list.csv")
 
 
 env_app = EnvApi()

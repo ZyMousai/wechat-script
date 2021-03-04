@@ -3,7 +3,6 @@ import json
 import os
 import re
 
-import numpy as np
 
 from core.mongo_client import MongoClient
 from env import env_app

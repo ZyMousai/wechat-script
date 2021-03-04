@@ -1,11 +1,14 @@
 # 企业微信基础操作
 # ERIC SUN 2020-9-24
+import time
+
 from core.callback_fun import recv_callback_handle, label_callback_handle
 from env import env_app
 from ctypes import *
 import json
 
 wx_loader = None
+m_queue = None
 
 
 # 回调函数
@@ -23,7 +26,7 @@ def recv_callback(client_id, data, length):
     elif json_data['type'] == 11001:
         # pass
         # 获取所有标签
-        env_app.thread_pool.submit(label_callback_handle, wx_loader, client_id)
+        env_app.thread_pool.submit(label_callback_handle, wx_loader, client_id,json_data)
         # conn_callback_handle(wx_loader, client_id)
     # 线程池
     env_app.thread_pool.submit(recv_callback_handle, wx_loader, client_id, json_data)
@@ -70,7 +73,7 @@ class WeCom:
         # wx_loader = self.WXLOADER
 
     @staticmethod
-    def open_wx():
+    def open_wx(queue):
         # 控制库地址
         loader_path = env_app.get_dll_path(env_app.wx_com_work)
 
@@ -90,7 +93,8 @@ class WeCom:
         # 初始化socket连接
         WXLOADER.WXCmdInitSocket(connect_callback, recv_callback, close_callback)
 
-        global wx_loader
+        global wx_loader, m_queue
+        m_queue = queue
         wx_loader = WXLOADER
         # 运行
         WXLOADER.WXCmdRun()
@@ -98,3 +102,6 @@ class WeCom:
         # ret = self.WXLOADER.WXCmdOpenWechat()
         # print(ret)
         WXLOADER.WXCmdOpenWechat()
+
+        while True:
+            time.sleep(0.5)

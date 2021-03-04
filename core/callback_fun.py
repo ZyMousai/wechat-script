@@ -3,11 +3,14 @@ import json
 import traceback
 import pandas as pd
 import numpy as np
+
+from core.auto_add_account import ModifyCsv
 from core.pubilc_fun import PublicFun
 from env import env_app
 from ctypes import c_char_p
 
 TITLE_LIST = []
+LOGIN_NAME = None
 
 
 class NpEncoder(json.JSONEncoder):
@@ -105,8 +108,34 @@ def recv_callback_handle(wx_obj, client_id, data):
     if type_code == env_app.WX_RECV_LABEL:
         TITLE_LIST = core
 
+    if type_code == env_app.WX_RECV_SEARCH_FRIEND:
+        error = request_data.get("error")
+        if error == env_app.WX_ERROR_OFTEN or error == env_app.WX_ERROR_NOT_EXIST or error == env_app.WX_ERROR_UNABLE:
+            ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME, error)
+        else:
+            response = {
+                "type": env_app.WX_ADD_FRIEND,
+                "data": {
+                    "user_id": core["user_id"],
+                    "verifytext": "你好",
+                    "verifycode": core["verifycode"],
+                    "rsakey": core["rskey"]
+                }
+            }
+            send(wx_obj, client_id, response)
+            ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME)
 
-def label_callback_handle(wx_obj, client_id):
+    if type_code == env_app.WX_ERROR_OFTEN or type_code == env_app.WX_ERROR_NOT_EXIST or type_code == env_app.WX_ERROR_UNABLE:
+        pass
+
+
+def label_callback_handle(wx_obj, client_id, data):
+    # 记录登录的名字
+    global LOGIN_NAME
+    request_data, msg_type = PublicFun.handle_data(data)
+    core = request_data['data']
+    LOGIN_NAME = core['name']
+    # 获取标签
     response = {
         "type": env_app.WX_SEND_LABEL
     }
@@ -115,3 +144,20 @@ def label_callback_handle(wx_obj, client_id):
 
 def get_room_id_list(wx_obj, client_id):
     pass
+
+
+def search_friend(wx_obj, client_id, queue):
+    import time
+    while True:
+        if not queue.empty():
+            get_obj = queue.get()
+            response = {
+                "type": env_app.WX_SEND_SEARCH_FRIEND,
+                "data": {
+                    "mobile": get_obj["phone"]
+                }
+            }
+            send(wx_obj, client_id, response)
+            time.sleep(0.5)
+        else:
+            time.sleep(10)
