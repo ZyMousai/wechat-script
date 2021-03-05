@@ -2,7 +2,7 @@
 # ERIC SUN 2020-9-24
 import time
 
-from core.callback_fun import recv_callback_handle, label_callback_handle
+from core.callback_fun import recv_callback_handle, login_callback_handle, search_friend
 from env import env_app
 from ctypes import *
 import json
@@ -24,14 +24,12 @@ def recv_callback(client_id, data, length):
     if json_data['type'] == 500:
         return
     elif json_data['type'] == 11001:
-        # pass
-        # 获取所有标签
-        env_app.thread_pool.submit(label_callback_handle, wx_loader, client_id,json_data)
-        # conn_callback_handle(wx_loader, client_id)
+        # 登录成功需要加载的东西
+        env_app.thread_pool.submit(login_callback_handle, wx_loader, client_id, json_data)
+        # 开启监控是否需要添加好友
+        env_app.thread_pool.submit(search_friend, wx_loader, client_id, m_queue)
     # 线程池
     env_app.thread_pool.submit(recv_callback_handle, wx_loader, client_id, json_data)
-    # 单线程
-    # recv_callback_handle(wx_loader,client_id,json_data)
 
 
 @WINFUNCTYPE(None, c_ulong)

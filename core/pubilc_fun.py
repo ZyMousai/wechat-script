@@ -75,6 +75,8 @@ class PublicFun(object):
             response["data"] = json.loads(keyword_data["app_info"])
         elif recv_type_code == env_app.WX_SEND_CARD:
             response["data"]["shared_id"] = keyword_data["card_id"]
+        elif recv_type_code == env_app.WX_SEND_JOIN_ROOM:
+            response["data"]["room_name"] = keyword_data["room_name"]
 
         return response if response != {} else False
 

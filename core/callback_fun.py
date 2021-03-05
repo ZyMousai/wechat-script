@@ -10,6 +10,7 @@ from env import env_app
 from ctypes import c_char_p
 
 TITLE_LIST = []
+ROOM_LIST = []
 LOGIN_NAME = None
 
 
@@ -31,7 +32,7 @@ def send(wx_obj, client_id, data):
 
 
 def recv_callback_handle(wx_obj, client_id, data):
-    global TITLE_LIST
+    global TITLE_LIST, ROOM_LIST
     # 解码
     request_data, msg_type = PublicFun.handle_data(data)
     print('[on_recv] client_id: {0}, message:{1}'.format(client_id, request_data))
@@ -59,7 +60,7 @@ def recv_callback_handle(wx_obj, client_id, data):
 
                 # 设置标签
                 # query_result = PublicFun.get_title(recv_content) # todo 正式环境使用，需要链接数据库
-                query_result = '一般发展客户'  # 测试用
+                query_result = '一般发展客户'  # 测试用 生产环境用上面todo代码
                 if query_result:
                     label_list = []
                     for label in TITLE_LIST:
@@ -91,6 +92,23 @@ def recv_callback_handle(wx_obj, client_id, data):
                 if v in recv_content:
                     keyword_data = phrase_set.iloc[k]
                     response = PublicFun.handle_response(keyword_data)
+                    # 邀请成员进入群
+                    if response['type'] == env_app.WX_SEND_JOIN_ROOM:
+                        room_name = response['data'].pop('room_name')
+                        for room_info in ROOM_LIST:
+                            if room_info['room_name'] == room_name:
+                                room_id = room_info['room_chat_id'].split(":")[-1]
+                                response['data'] = {
+                                    'room_id': room_id,
+                                    'member_list': [request_data['data']['conversation_id']]
+                                }
+                                print(response)
+                                send(wx_obj, client_id, response)
+                                break
+                            else:
+                                pass
+                        return
+                    # 正常回复
                     if response:
                         if is_room_msg:
                             response['data']['receiver'] = r'R:{}'.format(request_data['data']['receiver'])
@@ -98,9 +116,6 @@ def recv_callback_handle(wx_obj, client_id, data):
                             response['data']['conversation_id'] = request_data['data']['conversation_id']
                         print(response)
                         send(wx_obj, client_id, response)
-
-
-
 
         except Exception as e:
             print(traceback.format_exc())
@@ -125,11 +140,11 @@ def recv_callback_handle(wx_obj, client_id, data):
             send(wx_obj, client_id, response)
             ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME)
 
-    if type_code == env_app.WX_ERROR_OFTEN or type_code == env_app.WX_ERROR_NOT_EXIST or type_code == env_app.WX_ERROR_UNABLE:
-        pass
+    if type_code == env_app.WX_RECV_ROOM:
+        ROOM_LIST = core
 
 
-def label_callback_handle(wx_obj, client_id, data):
+def login_callback_handle(wx_obj, client_id, data):
     # 记录登录的名字
     global LOGIN_NAME
     request_data, msg_type = PublicFun.handle_data(data)
@@ -140,10 +155,11 @@ def label_callback_handle(wx_obj, client_id, data):
         "type": env_app.WX_SEND_LABEL
     }
     send(wx_obj, client_id, response)
-
-
-def get_room_id_list(wx_obj, client_id):
-    pass
+    # 获取群聊列表
+    response = {
+        "type": env_app.WX_SEND_ROOM
+    }
+    send(wx_obj, client_id, response)
 
 
 def search_friend(wx_obj, client_id, queue):

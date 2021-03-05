@@ -54,4 +54,33 @@ class AddAccount(object):
 class ModifyCsv(object):
     @staticmethod
     def modify_csv(phone, who_add, error=None):
-        pass
+        error_msg = None
+        # 读取
+        df_result = pd.read_csv(env_app.get_add_account_csv())
+        # 获取phone的index
+        phone = int(phone)
+        phone_index = df_result[df_result["phone"] == phone].index
+        # 获取who_add 是哪一列
+        who_add_index = list(df_result.columns).index('who_add')
+        # 获取is_success 是哪一列
+        is_success_index = list(df_result.columns).index('is_success')
+        if error == env_app.WX_ERROR_UNABLE:
+            error_msg = "对方设置 无法添加好友"
+        elif error == env_app.WX_ERROR_NOT_EXIST:
+            error_msg = "搜索用户不存在"
+        elif error_msg == env_app.WX_ERROR_OFTEN:
+            error_msg = "操作频繁"
+        if error and error_msg:
+            # 获取error 是哪一列
+            error_index = list(df_result.columns).index('error')
+            # 修改error 信息
+            df_result.iloc[phone_index, error_index] = error_msg
+            # 修改is_success 信息
+            df_result.iloc[phone_index, is_success_index] = 1
+        else:
+            # 修改is_success 信息
+            df_result.iloc[phone_index, is_success_index] = 0
+        # 修改who_add 信息
+        df_result.iloc[phone_index, who_add_index] = who_add
+        # 保存到csv
+        df_result.to_csv(env_app.get_add_account_csv())

@@ -29,10 +29,14 @@ class EnvApi(object):
     WX_RECV_SEARCH_FRIEND = 13000  # 接受搜索好友指令
     WX_ADD_FRIEND = 3001  # 添加搜索的好友
     WX_ERROR_OFTEN = 40001  # 操作频繁错误码
-    WX_ERROR_NOT_EXIST = 40003  # 搜索用户不存在
-    WX_ERROR_UNABLE = 40004  # 对方设置 无法添加好友
+    WX_ERROR_NOT_EXIST = 43003  # 搜索用户不存在
+    WX_ERROR_UNABLE = 43004  # 对方设置 无法添加好友
+    WX_SEND_ROOM = 2502  # 获取群聊列表
+    WX_RECV_ROOM = 22502  # 接受群聊列表
+    WX_SEND_JOIN_ROOM = 4003  # 邀请好友进群
 
     def __init__(self):
+        # todo 需要填写mongo信息
         self.mongo_info = {
             'host': '',
             'user': '',
