@@ -2,7 +2,6 @@
 tools/dll
 *.dll
 .idea
-tools/im_file
 tools/auto_recv/file
 tools/auto_recv/pic
 tools/auto_recv/video
