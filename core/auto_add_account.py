@@ -76,10 +76,10 @@ class ModifyCsv(object):
             # 修改error 信息
             df_result.iloc[phone_index, error_index] = error_msg
             # 修改is_success 信息
-            df_result.iloc[phone_index, is_success_index] = 1
+            df_result.iloc[phone_index, is_success_index] = 2
         else:
             # 修改is_success 信息
-            df_result.iloc[phone_index, is_success_index] = 0
+            df_result.iloc[phone_index, is_success_index] = 1
         # 修改who_add 信息
         df_result.iloc[phone_index, who_add_index] = who_add
         # 保存到csv

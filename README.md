@@ -10,9 +10,13 @@
 2. mongo_client mongo封装
 3. pubilc_fun 公共方法
 4. wxcom.py 调用dll
+5. auto_add_account.py 自动添加好友相关
 #### tools 工具包
 1. auto_recv 自动回复使用到的工具
+2. auto_rect/phrase/base_phrase.csv 为模板文件，填入自己需要的修改为phrase.csv程序方可触发
 2. dll
 3. im_file 导入自动添加好友使用
+4. im_file/mobile_list.csv 为自动导入好友文件，使用需要填入phone和is_success字段。
 #### env 全局
-#### auto_recv_manage 自动回复入口
+#### manage.py 程序入口
+
