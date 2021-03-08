@@ -3,7 +3,6 @@ import json
 import os
 import re
 
-
 from core.mongo_client import MongoClient
 from env import env_app
 
@@ -22,10 +21,14 @@ class PublicFun(object):
                     data['data']['name'] = env_app.base64_to_string(data['data'].get('name'))
                 if data['data'].get('sender_name'):
                     data['data']['sender_name'] = env_app.base64_to_string(data['data'].get('sender_name'))
+
             if isinstance(data['data'], list):
                 new_list = []
                 for x in data['data']:
-                    x['name'] = env_app.base64_to_string(x['name'])
+                    if x.get('name'):
+                        x['name'] = env_app.base64_to_string(x['name'])
+                    if x.get('room_name'):
+                        x['room_name'] = env_app.base64_to_string(x['room_name'])
                     new_list.append(x)
                 data['data'] = new_list
         except Exception as e:

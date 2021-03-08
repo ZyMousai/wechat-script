@@ -31,8 +31,10 @@ class EnvApi(object):
     WX_ERROR_OFTEN = 40001  # 操作频繁错误码
     WX_ERROR_NOT_EXIST = 43003  # 搜索用户不存在
     WX_ERROR_UNABLE = 43004  # 对方设置 无法添加好友
+    WX_ERROR_UNABLE_2 = 42000  # 对方设置 无法添加好友
+    WX_ERROR_UNKNOWN = 30000  # 未知错误
     WX_SEND_ROOM = 2502  # 获取群聊列表
-    WX_RECV_ROOM = 22502  # 接受群聊列表
+    WX_RECV_ROOM = 12502  # 接受群聊列表
     WX_SEND_JOIN_ROOM = 4003  # 邀请好友进群
 
     def __init__(self):

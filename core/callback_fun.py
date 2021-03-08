@@ -100,7 +100,7 @@ def recv_callback_handle(wx_obj, client_id, data):
                                 room_id = room_info['room_chat_id'].split(":")[-1]
                                 response['data'] = {
                                     'room_id': room_id,
-                                    'member_list': [request_data['data']['conversation_id']]
+                                    'member_list': [request_data['data']['conversation_id'].split("_")[-1]]
                                 }
                                 print(response)
                                 send(wx_obj, client_id, response)
@@ -125,7 +125,9 @@ def recv_callback_handle(wx_obj, client_id, data):
 
     if type_code == env_app.WX_RECV_SEARCH_FRIEND:
         error = request_data.get("error")
-        if error == env_app.WX_ERROR_OFTEN or error == env_app.WX_ERROR_NOT_EXIST or error == env_app.WX_ERROR_UNABLE:
+        if error == env_app.WX_ERROR_OFTEN or error == env_app.WX_ERROR_NOT_EXIST or \
+                error == env_app.WX_ERROR_UNABLE or error == env_app.WX_ERROR_UNABLE_2 or \
+                error == env_app.WX_ERROR_UNKNOWN:
             ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME, error)
         else:
             response = {
@@ -134,7 +136,7 @@ def recv_callback_handle(wx_obj, client_id, data):
                     "user_id": core["user_id"],
                     "verifytext": "你好",
                     "verifycode": core["verifycode"],
-                    "rsakey": core["rskey"]
+                    "rsakey": core.get('rskey', '')
                 }
             }
             send(wx_obj, client_id, response)
@@ -144,7 +146,7 @@ def recv_callback_handle(wx_obj, client_id, data):
         ROOM_LIST = core
 
 
-def login_callback_handle(wx_obj, client_id, data):
+def label_callback_handle(wx_obj, client_id, data):
     # 记录登录的名字
     global LOGIN_NAME
     request_data, msg_type = PublicFun.handle_data(data)
@@ -155,6 +157,9 @@ def login_callback_handle(wx_obj, client_id, data):
         "type": env_app.WX_SEND_LABEL
     }
     send(wx_obj, client_id, response)
+
+
+def room_list_callback_handle(wx_obj, client_id):
     # 获取群聊列表
     response = {
         "type": env_app.WX_SEND_ROOM
@@ -174,6 +179,6 @@ def search_friend(wx_obj, client_id, queue):
                 }
             }
             send(wx_obj, client_id, response)
-            time.sleep(0.5)
+            time.sleep(15)
         else:
-            time.sleep(10)
+            time.sleep(30)

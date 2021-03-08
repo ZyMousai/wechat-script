@@ -66,10 +66,12 @@ class ModifyCsv(object):
         is_success_index = list(df_result.columns).index('is_success')
         if error == env_app.WX_ERROR_UNABLE:
             error_msg = "对方设置 无法添加好友"
-        elif error == env_app.WX_ERROR_NOT_EXIST:
+        elif error == env_app.WX_ERROR_NOT_EXIST or error == env_app.WX_ERROR_UNABLE_2:
             error_msg = "搜索用户不存在"
-        elif error_msg == env_app.WX_ERROR_OFTEN:
+        elif error == env_app.WX_ERROR_OFTEN:
             error_msg = "操作频繁"
+        elif error == env_app.WX_ERROR_UNKNOWN:
+            error_msg = '未知错误'
         if error and error_msg:
             # 获取error 是哪一列
             error_index = list(df_result.columns).index('error')
@@ -83,4 +85,4 @@ class ModifyCsv(object):
         # 修改who_add 信息
         df_result.iloc[phone_index, who_add_index] = who_add
         # 保存到csv
-        df_result.to_csv(env_app.get_add_account_csv())
+        df_result.to_csv(env_app.get_add_account_csv(), index=False)

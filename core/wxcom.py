@@ -2,7 +2,7 @@
 # ERIC SUN 2020-9-24
 import time
 
-from core.callback_fun import recv_callback_handle, login_callback_handle, search_friend
+from core.callback_fun import recv_callback_handle, label_callback_handle, search_friend, room_list_callback_handle
 from env import env_app
 from ctypes import *
 import json
@@ -24,8 +24,10 @@ def recv_callback(client_id, data, length):
     if json_data['type'] == 500:
         return
     elif json_data['type'] == 11001:
-        # 登录成功需要加载的东西
-        env_app.thread_pool.submit(login_callback_handle, wx_loader, client_id, json_data)
+        # 获取标签列表
+        env_app.thread_pool.submit(label_callback_handle, wx_loader, client_id, json_data)
+        # 获取群聊列表
+        env_app.thread_pool.submit(room_list_callback_handle, wx_loader, client_id)
         # 开启监控是否需要添加好友
         env_app.thread_pool.submit(search_friend, wx_loader, client_id, m_queue)
     # 线程池
