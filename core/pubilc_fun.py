@@ -29,6 +29,11 @@ class PublicFun(object):
                         x['name'] = env_app.base64_to_string(x['name'])
                     if x.get('room_name'):
                         x['room_name'] = env_app.base64_to_string(x['room_name'])
+                    if x.get('label_list'):
+                        label_list = []
+                        for label_id in x.get('label_list'):
+                            label_list.append(env_app.base64_to_string(label_id))
+                        x['label_list'] = label_list
                     new_list.append(x)
                 data['data'] = new_list
         except Exception as e:
@@ -77,7 +82,7 @@ class PublicFun(object):
         elif recv_type_code == env_app.WX_SEND_APP:
             response["data"] = json.loads(keyword_data["app_info"])
         elif recv_type_code == env_app.WX_SEND_CARD:
-            response["data"]["shared_id"] = keyword_data["card_id"]
+            response["data"]["shared_id"] = str(keyword_data["card_id"])
         elif recv_type_code == env_app.WX_SEND_JOIN_ROOM:
             response["data"]["room_name"] = keyword_data["room_name"]
 

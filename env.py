@@ -36,6 +36,8 @@ class EnvApi(object):
     WX_SEND_ROOM = 2502  # 获取群聊列表
     WX_RECV_ROOM = 12502  # 接受群聊列表
     WX_SEND_JOIN_ROOM = 4003  # 邀请好友进群
+    WX_SEND_FRIEND = 2501  # 获取好友列表
+    WX_RECV_FRIEND = 12501  # 接受好友列表
 
     def __init__(self):
         # todo 需要填写mongo信息

@@ -14,8 +14,10 @@ if __name__ == '__main__':
         ACCOUNT_NUM -= 1
         p.start()
     while True:
-        # 10s 检测一下是否有文件需要导入
-        time.sleep(10)
+        # 等待30s 准备开始检测是否有文件需要导入
+        time.sleep(30)
         # 以进程队列形式进行分配
         add_account = AddAccount(QUEUE_LIST)
         add_account.run()
+        # 检测完毕 下一轮300S后开始
+        time.sleep(300)

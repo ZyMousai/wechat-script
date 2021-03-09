@@ -11,6 +11,7 @@ from ctypes import c_char_p
 
 TITLE_LIST = []
 ROOM_LIST = []
+FRIEND_LIST = []
 LOGIN_NAME = None
 
 
@@ -32,7 +33,7 @@ def send(wx_obj, client_id, data):
 
 
 def recv_callback_handle(wx_obj, client_id, data):
-    global TITLE_LIST, ROOM_LIST
+    global TITLE_LIST, ROOM_LIST, FRIEND_LIST
     # 解码
     request_data, msg_type = PublicFun.handle_data(data)
     print('[on_recv] client_id: {0}, message:{1}'.format(client_id, request_data))
@@ -48,13 +49,21 @@ def recv_callback_handle(wx_obj, client_id, data):
             if PublicFun.re_phone(recv_content) and not is_room_msg:
                 # 设置手机号
                 user_id = request_data['data']['conversation_id'].split('_')[-1]
+                mobile_list = []
+                label_list_old = []
+                for user_info in FRIEND_LIST:
+                    if user_info.get('user_id') == user_id:
+                        mobile_list = user_info.get('mobile_list') if user_info.get('mobile_list') else []
+                        label_list_old = user_info.get('label_list') if user_info.get('label_list') else []
+                        break
+
+                mobile_list.append(recv_content)
                 response = {
                     'type': env_app.WX_SET_PHONE,
                     'data': {
                         'user_id': user_id,
-                        'mobile_list': [recv_content]
+                        'mobile_list': mobile_list
                     }
-
                 }
                 send(wx_obj, client_id, response)
 
@@ -63,9 +72,12 @@ def recv_callback_handle(wx_obj, client_id, data):
                 query_result = '一般发展客户'  # 测试用 生产环境用上面todo代码
                 if query_result:
                     label_list = []
-                    for label in TITLE_LIST:
-                        if query_result in label['name']:
-                            label_list.append(label['label_id'])
+                    for label_name_old in label_list_old:
+                        for label in TITLE_LIST:
+                            if query_result in label['name']:
+                                label_list.append(label['label_id'])
+                            elif label_name_old in label['name']:
+                                label_list.append(label['label_id'])
                     response = {
                         "type": env_app.WX_SET_TITLE,
                         "data": {
@@ -144,6 +156,8 @@ def recv_callback_handle(wx_obj, client_id, data):
 
     if type_code == env_app.WX_RECV_ROOM:
         ROOM_LIST = core
+    if type_code == env_app.WX_RECV_FRIEND:
+        FRIEND_LIST = core
 
 
 def label_callback_handle(wx_obj, client_id, data):
@@ -163,6 +177,14 @@ def room_list_callback_handle(wx_obj, client_id):
     # 获取群聊列表
     response = {
         "type": env_app.WX_SEND_ROOM
+    }
+    send(wx_obj, client_id, response)
+
+
+def friend_list_callback_handle(wx_obj, client_id):
+    # 获取群聊列表
+    response = {
+        "type": env_app.WX_SEND_FRIEND
     }
     send(wx_obj, client_id, response)
 
