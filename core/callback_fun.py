@@ -46,47 +46,51 @@ def recv_callback_handle(wx_obj, client_id, data):
             is_room_msg = PublicFun.is_room(core.get('is_room_msg'))
             assert recv_content, 'The content of the received message is empty.'
             # 1.识别content是否为手机号
-            if PublicFun.re_phone(recv_content) and not is_room_msg:
-                # 设置手机号
-                user_id = request_data['data']['conversation_id'].split('_')[-1]
-                mobile_list = []
-                label_list_old = []
-                for user_info in FRIEND_LIST:
-                    if user_info.get('user_id') == user_id:
-                        mobile_list = user_info.get('mobile_list') if user_info.get('mobile_list') else []
-                        label_list_old = user_info.get('label_list') if user_info.get('label_list') else []
-                        break
+            phone_content = PublicFun.get_phone(recv_content)  # 获取手机号
+            if phone_content:
+                if PublicFun.re_phone(phone_content) and not is_room_msg:
+                    # 设置手机号
+                    user_id = request_data['data']['conversation_id'].split('_')[-1]
+                    mobile_list = []
+                    label_list_old = []
+                    for user_info in FRIEND_LIST:
+                        if user_info.get('user_id') == user_id:
+                            mobile_list = user_info.get('mobile_list') if user_info.get('mobile_list') else []
+                            label_list_old = user_info.get('label_list') if user_info.get('label_list') else []
+                            break
 
-                mobile_list.append(recv_content)
-                response = {
-                    'type': env_app.WX_SET_PHONE,
-                    'data': {
-                        'user_id': user_id,
-                        'mobile_list': mobile_list
-                    }
-                }
-                send(wx_obj, client_id, response)
-
-                # 设置标签
-                # query_result = PublicFun.get_title(recv_content) # todo 正式环境使用，需要链接数据库
-                query_result = '一般发展客户'  # 测试用 生产环境用上面todo代码
-                if query_result:
-                    label_list = []
-                    for label_name_old in label_list_old:
-                        for label in TITLE_LIST:
-                            if query_result in label['name']:
-                                label_list.append(label['label_id'])
-                            elif label_name_old in label['name']:
-                                label_list.append(label['label_id'])
+                    mobile_list.append(recv_content)
                     response = {
-                        "type": env_app.WX_SET_TITLE,
-                        "data": {
-                            "user_id": user_id,
-                            "label_id_list": label_list
+                        'type': env_app.WX_SET_PHONE,
+                        'data': {
+                            'user_id': user_id,
+                            'mobile_list': mobile_list
                         }
                     }
                     send(wx_obj, client_id, response)
-                return
+
+                    # 设置标签
+                    # query_result = PublicFun.get_title(recv_content) # todo 正式环境使用，需要链接数据库
+                    query_result = '一般发展客户'  # 测试用 生产环境用上面todo代码
+                    if query_result:
+                        label_list = []
+                        for label_name_old in label_list_old:
+                            for label in TITLE_LIST:
+                                if query_result in label['name']:
+                                    label_list.append(label['label_id'])
+                                elif label_name_old in label['name']:
+                                    label_list.append(label['label_id'])
+                        response = {
+                            "type": env_app.WX_SET_TITLE,
+                            "data": {
+                                "user_id": user_id,
+                                "label_id_list": label_list
+                            }
+                        }
+                        send(wx_obj, client_id, response)
+                    # 更新friend_list
+                    friend_list_callback_handle(wx_obj, client_id)
+                    return
 
             # 2.识别否词库
             no_phrase_set = pd.read_excel(env_app.get_no_phrase_path(), sheet_name="Sheet1")

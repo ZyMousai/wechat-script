@@ -98,6 +98,15 @@ class PublicFun(object):
         return result
 
     @staticmethod
+    def get_phone(content):
+        ret = re.search(r"\d{11}", content)
+        if ret:
+            result = ret.group()
+        else:
+            result = None
+        return result
+
+    @staticmethod
     def is_room(data):
         return True if data else False
 
