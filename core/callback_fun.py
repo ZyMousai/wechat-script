@@ -43,6 +43,9 @@ def recv_callback_handle(wx_obj, client_id, data):
     if type_code == env_app.WX_RECV_CODE and msg_type:
         try:
             recv_content = core.get('content')
+            if '联系人验证请求' in recv_content:
+                friend_list_callback_handle(wx_obj, client_id)
+                return
             is_room_msg = PublicFun.is_room(core.get('is_room_msg'))
             assert recv_content, 'The content of the received message is empty.'
             # 1.识别content是否为手机号
@@ -56,10 +59,12 @@ def recv_callback_handle(wx_obj, client_id, data):
                     for user_info in FRIEND_LIST:
                         if user_info.get('user_id') == user_id:
                             mobile_list = user_info.get('mobile_list') if user_info.get('mobile_list') else []
+                            if len(mobile_list) == 5:
+                                mobile_list.pop(0)
                             label_list_old = user_info.get('label_list') if user_info.get('label_list') else []
                             break
 
-                    mobile_list.append(recv_content)
+                    mobile_list.append(phone_content)
                     response = {
                         'type': env_app.WX_SET_PHONE,
                         'data': {
@@ -71,14 +76,16 @@ def recv_callback_handle(wx_obj, client_id, data):
 
                     # 设置标签
                     # query_result = PublicFun.get_title(recv_content) # todo 正式环境使用，需要链接数据库
-                    query_result = '一般发展客户'  # 测试用 生产环境用上面todo代码
+                    # 重要保持客户 重要发展客户 重要挽留用户 一般价值客户 一般发展客户 一般保持客户
+                    query_result = '重要保持客户'  # 测试用 生产环境用上面todo代码
                     if query_result:
                         label_list = []
+                        for label in TITLE_LIST:
+                            if query_result in label['name']:
+                                label_list.append(label['label_id'])
                         for label_name_old in label_list_old:
                             for label in TITLE_LIST:
-                                if query_result in label['name']:
-                                    label_list.append(label['label_id'])
-                                elif label_name_old in label['name']:
+                                if label_name_old in label['name']:
                                     label_list.append(label['label_id'])
                         response = {
                             "type": env_app.WX_SET_TITLE,
@@ -140,6 +147,8 @@ def recv_callback_handle(wx_obj, client_id, data):
         TITLE_LIST = core
 
     if type_code == env_app.WX_RECV_SEARCH_FRIEND:
+        # 接收到13000 更新好友缓存列表
+        friend_list_callback_handle(wx_obj, client_id)
         error = request_data.get("error")
         if error == env_app.WX_ERROR_OFTEN or error == env_app.WX_ERROR_NOT_EXIST or \
                 error == env_app.WX_ERROR_UNABLE or error == env_app.WX_ERROR_UNABLE_2 or \
@@ -186,7 +195,7 @@ def room_list_callback_handle(wx_obj, client_id):
 
 
 def friend_list_callback_handle(wx_obj, client_id):
-    # 获取群聊列表
+    # 获取好友列表
     response = {
         "type": env_app.WX_SEND_FRIEND
     }

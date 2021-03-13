@@ -10,6 +10,8 @@ import json
 
 wx_loader = None
 m_queue = None
+start_time = time.time()
+wait_time = 20  # todo 程序启动后的等待时间
 
 
 # 回调函数
@@ -22,9 +24,11 @@ def connect_callback(client_id):
 @WINFUNCTYPE(None, c_ulong, c_char_p, c_ulong)
 def recv_callback(client_id, data, length):
     json_data = json.loads(data)
-    if json_data['type'] == 500:
+    type_code = json_data['type']
+    no_wait_type_code = [env_app.WX_RECV_LABEL, env_app.WX_RECV_ROOM, env_app.WX_RECV_FRIEND]
+    if type_code == 500:
         return
-    elif json_data['type'] == 11001:
+    elif type_code == 11001:
         # 获取标签列表
         env_app.thread_pool.submit(label_callback_handle, wx_loader, client_id, json_data)
         # 获取群聊列表
@@ -34,7 +38,14 @@ def recv_callback(client_id, data, length):
         # 开启监控是否需要添加好友
         env_app.thread_pool.submit(search_friend, wx_loader, client_id, m_queue)
 
-    # 线程池
+    # 程序等待 不到时间不启动自动接受及回复功能
+    if type_code not in no_wait_type_code:
+        now_time = time.time()
+        if now_time - start_time <= wait_time:
+            print('Still need to wait:{}s'.format(wait_time - (now_time - start_time)))
+            return
+    time.sleep(1)
+    # 线程池 接收消息
     env_app.thread_pool.submit(recv_callback_handle, wx_loader, client_id, json_data)
 
 

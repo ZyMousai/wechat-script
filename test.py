@@ -67,24 +67,38 @@ a = [{'label_id': '14073748999626141', 'level': 1, 'name': '非常核心', 'supe
      {'label_id': '14073752940631136', 'level': 1, 'name': '倍思启程专卖店', 'super_id': '14073750543627757', 'type': 1},
      {'label_id': '14073751138632748', 'level': 2, 'name': '个人标签', 'super_id': '0', 'type': 2}]
 
-# coding: utf-8
-import multiprocessing
-import time
+# 测试队列分配
+import queue
+
+put_list = [x for x in range(11)]
+# put_list = a
+# print(len(a))
+queue_list = [queue.Queue(), queue.Queue(), queue.Queue()]
 
 
-def func(msg):
-    print("msg:", msg)
-    time.sleep(3)
-    print("end")
+def dispatch():
+    """调度及分配到队列"""
+    q_index = -1
+    for put_obj in put_list:
+        for q in queue_list:
+            now_q_index = queue_list.index(q)
+            last_q_index = queue_list.index(queue_list[-1])
+            if q_index != now_q_index and q_index < now_q_index:
+                q.put(put_obj)
+                if now_q_index == last_q_index:
+                    q_index = -1
+                else:
+                    q_index = now_q_index
+                break
 
 
-if __name__ == "__main__":
-    pool = multiprocessing.Pool(processes=3)
-    for i in range(4):
-        msg = "hello %d" % (i)
-        pool.apply_async(func, (msg,))  # 维持执行的进程总数为processes，当一个进程执行完毕后会添加新的进程进去
-
-    print("Mark~ Mark~ Mark~~~~~~~~~~~~~~~~~~~~~~")
-    pool.close()
-    pool.join()  # 调用join之前，先调用close函数，否则会出错。执行完close后不会有新的进程加入到pool,join函数等待所有子进程结束
-    print("Sub-process(es) done.")
+dispatch()
+print('list total:{}'.format(len(put_list)))
+print('*' * 50)
+print('Queue obj:', queue_list)
+print('*' * 50)
+for qqqqqqq in queue_list:
+    print('q-name:{},q-size:{}'.format(id(qqqqqqq), qqqqqqq.qsize()))
+    while not qqqqqqq.empty():
+        print('q-name:{},q yuansu:{}'.format(id(qqqqqqq), qqqqqqq.get()))
+    print('=' * 50)
