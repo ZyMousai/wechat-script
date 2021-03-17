@@ -1,8 +1,10 @@
 """回调函数"""
 import json
+import time
 import traceback
 import pandas as pd
 import numpy as np
+import threading
 
 from core.auto_add_account import ModifyCsv
 from core.pubilc_fun import PublicFun
@@ -13,6 +15,9 @@ TITLE_LIST = []
 ROOM_LIST = []
 FRIEND_LIST = []
 LOGIN_NAME = None
+lock = threading.Lock()
+
+lock_2 = threading.Lock()
 
 
 class NpEncoder(json.JSONEncoder):
@@ -60,6 +65,7 @@ def recv_callback_handle(wx_obj, client_id, data):
                         if user_info.get('user_id') == user_id:
                             mobile_list = user_info.get('mobile_list') if user_info.get('mobile_list') else []
                             if len(mobile_list) == 5:
+                                mobile_list.sort()
                                 mobile_list.pop(0)
                             label_list_old = user_info.get('label_list') if user_info.get('label_list') else []
                             break
@@ -74,10 +80,11 @@ def recv_callback_handle(wx_obj, client_id, data):
                     }
                     send(wx_obj, client_id, response)
 
+                    time.sleep(1)
                     # 设置标签
                     # query_result = PublicFun.get_title(recv_content) # todo 正式环境使用，需要链接数据库
                     # 重要保持客户 重要发展客户 重要挽留用户 一般价值客户 一般发展客户 一般保持客户
-                    query_result = '重要保持客户'  # 测试用 生产环境用上面todo代码
+                    query_result = '一般价值客户'  # 测试用 生产环境用上面todo代码
                     if query_result:
                         label_list = []
                         for label in TITLE_LIST:
@@ -97,7 +104,7 @@ def recv_callback_handle(wx_obj, client_id, data):
                         send(wx_obj, client_id, response)
                     # 更新friend_list
                     friend_list_callback_handle(wx_obj, client_id)
-                    return
+                    # return
 
             # 2.识别否词库
             no_phrase_set = pd.read_excel(env_app.get_no_phrase_path(), sheet_name="Sheet1")
@@ -130,7 +137,7 @@ def recv_callback_handle(wx_obj, client_id, data):
                                 break
                             else:
                                 pass
-                        return
+                        continue
                     # 正常回复
                     if response:
                         if is_room_msg:
@@ -147,30 +154,37 @@ def recv_callback_handle(wx_obj, client_id, data):
         TITLE_LIST = core
 
     if type_code == env_app.WX_RECV_SEARCH_FRIEND:
-        # 接收到13000 更新好友缓存列表
-        friend_list_callback_handle(wx_obj, client_id)
-        error = request_data.get("error")
-        if error == env_app.WX_ERROR_OFTEN or error == env_app.WX_ERROR_NOT_EXIST or \
-                error == env_app.WX_ERROR_UNABLE or error == env_app.WX_ERROR_UNABLE_2 or \
-                error == env_app.WX_ERROR_UNKNOWN:
-            ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME, error)
-        else:
-            response = {
-                "type": env_app.WX_ADD_FRIEND,
-                "data": {
-                    "user_id": core["user_id"],
-                    "verifytext": "你好",
-                    "verifycode": core["verifycode"],
-                    "rsakey": core.get('rskey', '')
-                }
-            }
-            send(wx_obj, client_id, response)
-            ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME)
-
+        try:
+            if lock.acquire():
+                # 接收到13000 更新好友缓存列表
+                friend_list_callback_handle(wx_obj, client_id)
+                error = request_data.get("error")
+                if error == env_app.WX_ERROR_OFTEN or error == env_app.WX_ERROR_NOT_EXIST or \
+                        error == env_app.WX_ERROR_UNABLE or error == env_app.WX_ERROR_UNABLE_2 or \
+                        error == env_app.WX_ERROR_UNKNOWN:
+                    ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME, error)
+                else:
+                    response = {
+                        "type": env_app.WX_ADD_FRIEND,
+                        "data": {
+                            "user_id": core["user_id"],
+                            "verifytext": "你好",
+                            "verifycode": core["verifycode"],
+                            "rsakey": core.get('rskey', '')
+                        }
+                    }
+                    send(wx_obj, client_id, response)
+                    ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME)
+        finally:
+            lock.release()
     if type_code == env_app.WX_RECV_ROOM:
         ROOM_LIST = core
     if type_code == env_app.WX_RECV_FRIEND:
-        FRIEND_LIST = core
+        try:
+            if lock_2.acquire():
+                FRIEND_LIST = core
+        finally:
+            lock_2.release()
 
 
 def label_callback_handle(wx_obj, client_id, data):
