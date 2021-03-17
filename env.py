@@ -1,3 +1,4 @@
+import multiprocessing
 import os
 import sys
 import base64
@@ -53,6 +54,9 @@ class EnvApi(object):
         self.wx_com_work = "WXCommand_work.dll"
         # 线程池
         self.thread_pool = ThreadPoolExecutor(THREAD_NUM)
+
+        # 进程锁
+        self.M_LOCK = multiprocessing.Lock()
 
     @staticmethod
     def app_path():

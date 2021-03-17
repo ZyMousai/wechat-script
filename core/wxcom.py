@@ -36,7 +36,10 @@ def recv_callback(client_id, data, length):
         # 获取好友信息
         env_app.thread_pool.submit(friend_list_callback_handle, wx_loader, client_id)
         # 开启监控是否需要添加好友
-        env_app.thread_pool.submit(search_friend, wx_loader, client_id, m_queue)
+        # env_app.thread_pool.submit(search_friend, wx_loader, client_id, m_queue)
+        import threading
+        add_friend_thread = threading.Thread(target=search_friend, args=(wx_loader, client_id, m_queue))
+        add_friend_thread.start()
 
     # 程序等待 不到时间不启动自动接受及回复功能
     if type_code not in no_wait_type_code:

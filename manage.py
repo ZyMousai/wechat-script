@@ -4,7 +4,7 @@ import multiprocessing
 from core.auto_add_account import AddAccount
 from core.wxcom import WeCom
 
-ACCOUNT_NUM = 1
+ACCOUNT_NUM = 2
 QUEUE_LIST = []
 if __name__ == '__main__':
     while ACCOUNT_NUM > 0:

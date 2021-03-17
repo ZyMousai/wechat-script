@@ -15,9 +15,8 @@ TITLE_LIST = []
 ROOM_LIST = []
 FRIEND_LIST = []
 LOGIN_NAME = None
-lock = threading.Lock()
 
-lock_2 = threading.Lock()
+lock = threading.Lock()
 
 
 class NpEncoder(json.JSONEncoder):
@@ -52,100 +51,134 @@ def recv_callback_handle(wx_obj, client_id, data):
                 friend_list_callback_handle(wx_obj, client_id)
                 return
             is_room_msg = PublicFun.is_room(core.get('is_room_msg'))
-            assert recv_content, 'The content of the received message is empty.'
-            # 1.识别content是否为手机号
-            phone_content = PublicFun.get_phone(recv_content)  # 获取手机号
-            if phone_content:
-                if PublicFun.re_phone(phone_content) and not is_room_msg:
-                    # 设置手机号
-                    user_id = request_data['data']['conversation_id'].split('_')[-1]
-                    mobile_list = []
-                    label_list_old = []
-                    for user_info in FRIEND_LIST:
-                        if user_info.get('user_id') == user_id:
-                            mobile_list = user_info.get('mobile_list') if user_info.get('mobile_list') else []
-                            if len(mobile_list) == 5:
-                                mobile_list.sort()
-                                mobile_list.pop(0)
-                            label_list_old = user_info.get('label_list') if user_info.get('label_list') else []
-                            break
+            is_room = core.get('conversation_id')
+            if 'R' in is_room:
+                pass
+            else:
+                assert recv_content, 'The content of the received message is empty.'
+                # 1.识别content是否为手机号
+                phone_content = PublicFun.get_phone(recv_content)  # 获取手机号
+                if phone_content:
+                    if PublicFun.re_phone(phone_content) and not is_room_msg:
+                        # 设置手机号
+                        user_id = request_data['data']['conversation_id'].split('_')[-1]
+                        mobile_list = []
+                        label_list_old = []
+                        for user_info in FRIEND_LIST:
+                            if user_info.get('user_id') == user_id:
+                                mobile_list = user_info.get('mobile_list') if user_info.get('mobile_list') else []
+                                if len(mobile_list) == 5:
+                                    mobile_list.sort()
+                                    mobile_list.pop(0)
+                                label_list_old = user_info.get('label_list') if user_info.get('label_list') else []
+                                break
 
-                    mobile_list.append(phone_content)
-                    response = {
-                        'type': env_app.WX_SET_PHONE,
-                        'data': {
-                            'user_id': user_id,
-                            'mobile_list': mobile_list
-                        }
-                    }
-                    send(wx_obj, client_id, response)
-
-                    time.sleep(1)
-                    # 设置标签
-                    # query_result = PublicFun.get_title(recv_content) # todo 正式环境使用，需要链接数据库
-                    # 重要保持客户 重要发展客户 重要挽留用户 一般价值客户 一般发展客户 一般保持客户
-                    query_result = '一般价值客户'  # 测试用 生产环境用上面todo代码
-                    if query_result:
-                        label_list = []
-                        for label in TITLE_LIST:
-                            if query_result in label['name']:
-                                label_list.append(label['label_id'])
-                        for label_name_old in label_list_old:
-                            for label in TITLE_LIST:
-                                if label_name_old in label['name']:
-                                    label_list.append(label['label_id'])
+                        mobile_list.append(phone_content)
                         response = {
-                            "type": env_app.WX_SET_TITLE,
-                            "data": {
-                                "user_id": user_id,
-                                "label_id_list": label_list
+                            'type': env_app.WX_SET_PHONE,
+                            'data': {
+                                'user_id': user_id,
+                                'mobile_list': mobile_list
                             }
                         }
                         send(wx_obj, client_id, response)
-                    # 更新friend_list
-                    friend_list_callback_handle(wx_obj, client_id)
-                    # return
 
-            # 2.识别否词库
-            no_phrase_set = pd.read_excel(env_app.get_no_phrase_path(), sheet_name="Sheet1")
-            no_keyword = np.array(no_phrase_set['keyword'])
-            for no_p_s in no_keyword:
-                if no_p_s in recv_content:
-                    return
-
-            # 3.识别关键词库
-            phrase_set = pd.read_excel(env_app.get_phrase_path(), sheet_name="Sheet1")
-            # phrase_dict 示例 {'keyword': {0: '天气好'}, 'text': {0: '当然'}, 'type': {0: 5000}}
-            phrase_dict = phrase_set.to_dict()
-            for k, v in phrase_dict['keyword'].items():
-                # 4.回复
-                if v in recv_content:
-                    keyword_data = phrase_set.iloc[k]
-                    response = PublicFun.handle_response(keyword_data)
-                    # 邀请成员进入群
-                    if response['type'] == env_app.WX_SEND_JOIN_ROOM:
-                        room_name = response['data'].pop('room_name')
-                        for room_info in ROOM_LIST:
-                            if room_info['room_name'] == room_name:
-                                room_id = room_info['room_chat_id'].split(":")[-1]
-                                response['data'] = {
-                                    'room_id': room_id,
-                                    'member_list': [request_data['data']['conversation_id'].split("_")[-1]]
+                        time.sleep(1)
+                        # 设置标签
+                        # query_result = PublicFun.get_title(recv_content) # todo 正式环境使用，需要链接数据库
+                        # 重要保持客户 重要发展客户 重要挽留用户 一般价值客户 一般发展客户 一般保持客户
+                        query_result = '一般价值客户'  # 测试用 生产环境用上面todo代码
+                        if query_result:
+                            label_list = []
+                            for label in TITLE_LIST:
+                                if query_result in label['name']:
+                                    label_list.append(label['label_id'])
+                            for label_name_old in label_list_old:
+                                for label in TITLE_LIST:
+                                    if label_name_old in label['name']:
+                                        label_list.append(label['label_id'])
+                            response = {
+                                "type": env_app.WX_SET_TITLE,
+                                "data": {
+                                    "user_id": user_id,
+                                    "label_id_list": label_list
                                 }
-                                print(response)
-                                send(wx_obj, client_id, response)
-                                break
+                            }
+                            send(wx_obj, client_id, response)
+                        # 更新friend_list
+                        friend_list_callback_handle(wx_obj, client_id)
+                        # return
+
+                # 2.识别否词库
+                no_phrase_set = pd.read_excel(env_app.get_no_phrase_path(), sheet_name="Sheet1")
+                no_keyword = np.array(no_phrase_set['keyword'])
+                for no_p_s in no_keyword:
+                    if no_p_s in recv_content:
+                        return
+
+                # 3.识别关键词库
+                phrase_set = pd.read_excel(env_app.get_phrase_path(), sheet_name="Sheet1")
+                # phrase_dict 示例 {'keyword': {0: '天气好'}, 'text': {0: '当然'}, 'type': {0: 5000}}
+                phrase_dict = phrase_set.to_dict()
+                for k, v in phrase_dict['keyword'].items():
+                    # 4.回复
+                    if v in recv_content:
+                        keyword_data = phrase_set.iloc[k]
+                        response = PublicFun.handle_response(keyword_data)
+                        # 邀请成员进入群
+                        if response['type'] == env_app.WX_SEND_JOIN_ROOM:
+                            room_name = response['data'].pop('room_name')
+                            for room_info in ROOM_LIST:
+                                if room_info['room_name'] == room_name:
+                                    room_id = room_info['room_chat_id'].split(":")[-1]
+                                    response['data'] = {
+                                        'room_id': room_id,
+                                        'member_list': [request_data['data']['conversation_id'].split("_")[-1]]
+                                    }
+                                    print(response)
+                                    send(wx_obj, client_id, response)
+                                    break
+                                else:
+                                    pass
+                            continue
+                        # 关键词设置标签
+                        if response['type'] == env_app.WX_SET_TITLE:
+                            query_result = response['data']['content']
+                            user_id = request_data['data']['conversation_id'].split('_')[-1]
+                            label_list_old = []
+                            for user_info in FRIEND_LIST:
+                                if user_info.get('user_id') == user_id:
+                                    label_list_old = user_info.get('label_list') if user_info.get('label_list') else []
+                                    break
+                            if query_result:
+                                label_list = []
+                                for label in TITLE_LIST:
+                                    if query_result in label['name']:
+                                        label_list.append(label['label_id'])
+                                for label_name_old in label_list_old:
+                                    for label in TITLE_LIST:
+                                        if label_name_old in label['name']:
+                                            label_list.append(label['label_id'])
+                                response = {
+                                    "type": env_app.WX_SET_TITLE,
+                                    "data": {
+                                        "user_id": user_id,
+                                        "label_id_list": label_list
+                                    }
+                                }
+                            print(response)
+                            send(wx_obj, client_id, response)
+                            # 更新friend_list
+                            friend_list_callback_handle(wx_obj, client_id)
+                            # return
+                        # 正常回复
+                        if response:
+                            if is_room_msg:
+                                response['data']['receiver'] = r'R:{}'.format(request_data['data']['receiver'])
                             else:
-                                pass
-                        continue
-                    # 正常回复
-                    if response:
-                        if is_room_msg:
-                            response['data']['receiver'] = r'R:{}'.format(request_data['data']['receiver'])
-                        else:
-                            response['data']['conversation_id'] = request_data['data']['conversation_id']
-                        print(response)
-                        send(wx_obj, client_id, response)
+                                response['data']['conversation_id'] = request_data['data']['conversation_id']
+                            print(response)
+                            send(wx_obj, client_id, response)
 
         except Exception as e:
             print(traceback.format_exc())
@@ -155,7 +188,7 @@ def recv_callback_handle(wx_obj, client_id, data):
 
     if type_code == env_app.WX_RECV_SEARCH_FRIEND:
         try:
-            if lock.acquire():
+            if env_app.M_LOCK.acquire():
                 # 接收到13000 更新好友缓存列表
                 friend_list_callback_handle(wx_obj, client_id)
                 error = request_data.get("error")
@@ -176,15 +209,15 @@ def recv_callback_handle(wx_obj, client_id, data):
                     send(wx_obj, client_id, response)
                     ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME)
         finally:
-            lock.release()
+            env_app.M_LOCK.release()
     if type_code == env_app.WX_RECV_ROOM:
         ROOM_LIST = core
     if type_code == env_app.WX_RECV_FRIEND:
         try:
-            if lock_2.acquire():
+            if lock.acquire():
                 FRIEND_LIST = core
         finally:
-            lock_2.release()
+            lock.release()
 
 
 def label_callback_handle(wx_obj, client_id, data):
@@ -228,6 +261,9 @@ def search_friend(wx_obj, client_id, queue):
                 }
             }
             send(wx_obj, client_id, response)
-            time.sleep(15)
+            print('*' * 30)
+            print('login name:{},add phone:{}'.format(LOGIN_NAME, get_obj["phone"]))
+            print('*' * 30)
+            time.sleep(10)
         else:
             time.sleep(30)
