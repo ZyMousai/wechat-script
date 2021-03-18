@@ -3,12 +3,20 @@ import pandas as pd
 
 
 class AddAccount(object):
-    def __init__(self, queue_list):
+    def __init__(self, queue_list, file_json_uuid):
         self.queue_list = queue_list
         self.file_path = env_app.get_add_account_csv()
         self.add_result = None
         self.original_result = None
         self.put_list = []
+        self.file_client_name = file_json_uuid
+        self.client_list = []
+
+    def __read_client(self):
+        with open(env_app.get_client_json_path(self.file_client_name)) as f:
+            client_list = f.read().split(':')
+            client_list.pop(-1)
+            self.client_list = client_list
 
     def __read_file(self):
         # 状态码 is_success 0未添加 1添加成功 2添加错误
@@ -29,13 +37,27 @@ class AddAccount(object):
 
     def __dispatch(self):
         """调度及分配到队列"""
+        # q_index = -1
+        # for put_obj in self.put_list:
+        #     for q in self.queue_list:
+        #         now_q_index = self.queue_list.index(q)
+        #         last_q_index = self.queue_list.index(self.queue_list[-1])
+        #         if q_index != now_q_index and q_index < now_q_index:
+        #             q.put(put_obj)
+        #             if now_q_index == last_q_index:
+        #                 q_index = -1
+        #             else:
+        #                 q_index = now_q_index
+        #             break
+
         q_index = -1
         for put_obj in self.put_list:
-            for q in self.queue_list:
-                now_q_index = self.queue_list.index(q)
-                last_q_index = self.queue_list.index(self.queue_list[-1])
+            for c in self.client_list:
+                now_q_index = self.client_list.index(c)
+                last_q_index = self.client_list.index(self.client_list[-1])
                 if q_index != now_q_index and q_index < now_q_index:
-                    q.put(put_obj)
+                    put_obj['client_id'] = c
+                    self.queue_list[-1].put(put_obj)
                     if now_q_index == last_q_index:
                         q_index = -1
                     else:
@@ -43,6 +65,7 @@ class AddAccount(object):
                     break
 
     def run(self):
+        self.__read_client()
         # 读取文件
         self.__read_file()
         # 读取出来df不为空则生成 添加账号数据对象 放进队列

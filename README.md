@@ -14,9 +14,11 @@
 #### tools 工具包
 1. auto_recv 自动回复使用到的工具
 2. auto_rect/phrase/base_phrase.csv 为模板文件，填入自己需要的修改为phrase.csv程序方可触发
-2. dll
-3. im_file 导入自动添加好友使用
-4. im_file/mobile_list.csv 为自动导入好友文件，使用需要填入phone和is_success字段。
+3. dll
+4. im_file 导入自动添加好友使用
+5. im_file/mobile_list.csv 为自动导入好友文件，使用需要填入phone和is_success字段。
+6. client_json 为存储client_id的配置文件，可删除
+7. client_name.txt 为client_id和name的映射
 #### env 全局
 #### manage.py 程序入口
 
@@ -30,3 +32,4 @@
 |1.4|2021-3-13|添加开启程序3分钟后处理消息，添加新增好友刷新缓存|
 |1.5|2021-3-17|修改手机号及群邀请后继续触发回复，添加好友增加线程锁，添加手机号如果满了进行正序排序|
 |1.6|2021-3-17|修复添加好友异常|
+|1.7|2021-3-18|修改添加好友位单队列记录client_id的方式|

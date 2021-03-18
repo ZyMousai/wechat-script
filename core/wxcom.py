@@ -1,6 +1,7 @@
 # 企业微信基础操作
 # ERIC SUN 2020-9-24
 import time
+import uuid
 
 from core.callback_fun import recv_callback_handle, label_callback_handle, search_friend, room_list_callback_handle, \
     friend_list_callback_handle
@@ -12,12 +13,16 @@ wx_loader = None
 m_queue = None
 start_time = time.time()
 wait_time = 20  # todo 程序启动后的等待时间
+m_file_json_uuid = None
 
 
 # 回调函数
 @WINFUNCTYPE(None, c_ulong)
 def connect_callback(client_id):
     print('[on_connect] client_id: {0}'.format(client_id))
+    with open(env_app.get_client_json_path(m_file_json_uuid), 'a+') as f:
+        f.write(str(client_id) + ':')
+
     # env_app.thread_pool.submit(conn_callback_handle, wx_loader, client_id)
 
 
@@ -38,7 +43,7 @@ def recv_callback(client_id, data, length):
         # 开启监控是否需要添加好友
         # env_app.thread_pool.submit(search_friend, wx_loader, client_id, m_queue)
         import threading
-        add_friend_thread = threading.Thread(target=search_friend, args=(wx_loader, client_id, m_queue))
+        add_friend_thread = threading.Thread(target=search_friend, args=(wx_loader, m_queue))
         add_friend_thread.start()
 
     # 程序等待 不到时间不启动自动接受及回复功能
@@ -91,7 +96,7 @@ class WeCom:
         # wx_loader = self.WXLOADER
 
     @staticmethod
-    def open_wx(queue):
+    def open_wx(queue, file_json_uuid):
         # 控制库地址
         loader_path = env_app.get_dll_path(env_app.wx_com_work)
 
@@ -111,7 +116,8 @@ class WeCom:
         # 初始化socket连接
         WXLOADER.WXCmdInitSocket(connect_callback, recv_callback, close_callback)
 
-        global wx_loader, m_queue
+        global wx_loader, m_queue, m_file_json_uuid
+        m_file_json_uuid = file_json_uuid
         m_queue = queue
         wx_loader = WXLOADER
         # 运行

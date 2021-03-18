@@ -195,7 +195,7 @@ def recv_callback_handle(wx_obj, client_id, data):
                 if error == env_app.WX_ERROR_OFTEN or error == env_app.WX_ERROR_NOT_EXIST or \
                         error == env_app.WX_ERROR_UNABLE or error == env_app.WX_ERROR_UNABLE_2 or \
                         error == env_app.WX_ERROR_UNKNOWN:
-                    ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME, error)
+                    ModifyCsv.modify_csv(core["mobile"], client_id, error)
                 else:
                     response = {
                         "type": env_app.WX_ADD_FRIEND,
@@ -207,7 +207,7 @@ def recv_callback_handle(wx_obj, client_id, data):
                         }
                     }
                     send(wx_obj, client_id, response)
-                    ModifyCsv.modify_csv(core["mobile"], LOGIN_NAME)
+                    ModifyCsv.modify_csv(core["mobile"], client_id)
         finally:
             env_app.M_LOCK.release()
     if type_code == env_app.WX_RECV_ROOM:
@@ -226,6 +226,10 @@ def label_callback_handle(wx_obj, client_id, data):
     request_data, msg_type = PublicFun.handle_data(data)
     core = request_data['data']
     LOGIN_NAME = core['name']
+    print('login client_id:{},login name:{}'.format(client_id, LOGIN_NAME))
+    with open(env_app.get_client_name_path(), 'a+') as f:
+        f.write(str(client_id) + ':' + LOGIN_NAME)
+        f.write('\n')
     # 获取标签
     response = {
         "type": env_app.WX_SEND_LABEL
@@ -249,7 +253,7 @@ def friend_list_callback_handle(wx_obj, client_id):
     send(wx_obj, client_id, response)
 
 
-def search_friend(wx_obj, client_id, queue):
+def search_friend(wx_obj, queue):
     import time
     while True:
         if not queue.empty():
@@ -260,9 +264,10 @@ def search_friend(wx_obj, client_id, queue):
                     "mobile": get_obj["phone"]
                 }
             }
+            client_id = int(get_obj.get('client_id'))
             send(wx_obj, client_id, response)
             print('*' * 30)
-            print('login name:{},add phone:{}'.format(LOGIN_NAME, get_obj["phone"]))
+            print('login client_id:{},add phone:{}'.format(client_id, get_obj["phone"]))
             print('*' * 30)
             time.sleep(10)
         else:

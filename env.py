@@ -97,5 +97,10 @@ class EnvApi(object):
     def get_add_account_csv(self):
         return os.path.join(self.app_path(), "tools", "im_file", "mobile_list.csv")
 
+    def get_client_json_path(self, file_name):
+        return os.path.join(self.app_path(), "tools", "client_json", file_name)
+
+    def get_client_name_path(self):
+        return os.path.join(self.app_path(), "tools", "client_name.txt")
 
 env_app = EnvApi()
