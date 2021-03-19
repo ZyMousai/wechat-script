@@ -197,6 +197,17 @@ def recv_callback_handle(wx_obj, client_id, data):
                         error == env_app.WX_ERROR_UNKNOWN:
                     ModifyCsv.modify_csv(core["mobile"], client_id, error)
                 else:
+                    # 设置手机号
+                    time.sleep(1)
+                    response = {
+                        'type': env_app.WX_SET_PHONE,
+                        'data': {
+                            'user_id': core["user_id"],
+                            'mobile_list': [core["mobile"]]
+                        }
+                    }
+                    send(wx_obj, client_id, response)
+
                     response = {
                         "type": env_app.WX_ADD_FRIEND,
                         "data": {
@@ -207,6 +218,7 @@ def recv_callback_handle(wx_obj, client_id, data):
                         }
                     }
                     send(wx_obj, client_id, response)
+
                     ModifyCsv.modify_csv(core["mobile"], client_id)
         finally:
             env_app.M_LOCK.release()
