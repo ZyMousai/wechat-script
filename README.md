@@ -1,4 +1,5 @@
 # wechat-script
+### 本项目为针对企业微信的开发
 ## 开发环境
 1. python3.7.3 32bit
 2. 依赖包 requirements.txt
